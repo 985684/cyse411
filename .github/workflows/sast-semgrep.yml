@@ -1,5 +1,4 @@
 # Correct file name: .github/workflows/sast-semgrep.yml
-
 name: SAST - Semgrep Scan
 
 # This block defines the events that start the workflow
@@ -23,4 +22,8 @@ jobs:
         config: |
           p/security-audit
           p/owasp-top-ten
+          p/nodejs
+          p/express
+          p/react
+          p/typescript
      
