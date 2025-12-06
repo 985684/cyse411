@@ -16,33 +16,28 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 1: 
+      # CHANGED: Use the new folder path (e.g., 'canonicalization-example')
       - name: Install lab dependencies
-        
-        working-directory: idor/backend 
+        working-directory: canonicalization-example 
         run: |
           npm install
 
-      # Step 2: 
+      # CHANGED: Use the new folder path
       - name: Start vulnerable app
-        
-        working-directory: idor/backend
+        working-directory: canonicalization-example
         run: |
-          # CHANGED: If the start command is different, update it here (e.g., node index.js)
-          # Assuming the app is still started with 'npm start' based on your prompt,
-          # but if it requires 'node index.js', replace 'npm start' accordingly.
+          # Use 'npm start' or the correct custom start command if necessary
           npm start & 
           # Wait for the server to boot up
           sleep 20 
 
-      # Step 3: Run the ZAP scan
       - name: Run OWASP ZAP full scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
           # CHANGED: Use the new port (8080) for the target URL
           target: 'http://localhost:8080'
           
-          # Keep this as false for now to get a 'Success' status (Task 1/2 requirement)
+          # Keeps the job status as Success 
           fail_action: false
           
           allow_issue_writing: false
