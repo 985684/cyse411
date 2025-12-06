@@ -1,12 +1,14 @@
 name: DAST - OWASP ZAP Full Scan
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # run manually from Actions tab
+  # You can also add:
+  # push:
+  #   branches: [ main ]
 
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,28 +18,22 @@ jobs:
         with:
           node-version: '20'
 
-      # CHANGED: Use the new folder path (e.g., 'canonicalization-example')
       - name: Install lab dependencies
-        working-directory: canonicalization-example 
+        working-directory: fastbank_insecure_classwork/backend
         run: |
           npm install
 
-      # CHANGED: Use the new folder path
       - name: Start vulnerable app
-        working-directory: canonicalization-example
+        working-directory: fastbank_insecure_classwork/backend
         run: |
-          # Use 'npm start' or the correct custom start command if necessary
-          npm start & 
-          # Wait for the server to boot up
-          sleep 20 
+          npm start &
+          # wait for the server to boot
+          sleep 20
 
       - name: Run OWASP ZAP full scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
-          # CHANGED: Use the new port (8080) for the target URL
           target: 'http://localhost:8080'
-          
-          # Keeps the job status as Success 
-          fail_action: false
-          
-          allow_issue_writing: false
+          fail_action: true # fail job if ZAP finds alerts
+          allow_issue_writing: false # don't auto-open GitHub issues
+
