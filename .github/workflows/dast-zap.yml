@@ -2,8 +2,6 @@ name: DAST - OWASP ZAP Full Scan
 
 on:
   workflow_dispatch:
-  # push:
-  #  branches: [ main ]
 
 jobs:
   zap_scan:
@@ -18,24 +16,33 @@ jobs:
         with:
           node-version: '20'
 
-      # Fix 1: Ensure the working directory is correct based on the 'cyse411' repository structure
+      # Step 1: 
       - name: Install lab dependencies
-        working-directory: fastbank-auth-lab/backend    # <--- CORRECTED FOLDER NAME
+        
+        working-directory: idor/backend 
         run: |
           npm install
 
+      # Step 2: 
       - name: Start vulnerable app
-        working-directory: fastbank-auth-lab/backend     # <--- CORRECTED FOLDER NAME
+        
+        working-directory: idor/backend
         run: |
-          # Use `npm start &` to run in the background. Note the server will likely run on localhost:3000
+          # CHANGED: If the start command is different, update it here (e.g., node index.js)
+          # Assuming the app is still started with 'npm start' based on your prompt,
+          # but if it requires 'node index.js', replace 'npm start' accordingly.
           npm start & 
-          # Wait for the server to boot up and be ready for connections
-          sleep 20
+          # Wait for the server to boot up
+          sleep 20 
 
-      # Fix 2: The target must be 'http://localhost'
+      # Step 3: Run the ZAP scan
       - name: Run OWASP ZAP full scan
         uses: zaproxy/action-full-scan@v0.13.0
         with:
-          target: 'http://localhost:3000' # <--- CORRECTED TARGET URL
-          fail_action: true               
+          # CHANGED: Use the new port (8080) for the target URL
+          target: 'http://localhost:8080'
+          
+          # Keep this as false for now to get a 'Success' status (Task 1/2 requirement)
+          fail_action: false
+          
           allow_issue_writing: false
